@@ -1,588 +1,916 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grzegorz Mirecki — Jiu-Jitsu World Seminars</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2E7D32;
-            --accent: #8BC34A;
-            --light-bg: #F1F8E9;
-            --dark-text: #1B5E20;
-            --gray-text: #689F38;
-            --white: #ffffff;
-            --shadow: 0 4px 20px rgba(46, 125, 50, 0.08);
-        }
+import React, { useState, useEffect } from 'react';
+import { Menu, X, ChevronDown, Globe, MapPin, Calendar, Users, Trophy, Star, Clock, Phone, Mail, MessageCircle, Check, ArrowRight, Award, Target, Shield, Heart } from 'lucide-react';
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+const App = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [language, setLanguage] = useState('pl');
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    groupSize: '',
+    experience: '',
+    message: ''
+  });
 
-        body {
-            background-color: var(--white);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-        header {
-            background: var(--white);
-            padding: 1.2rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
+  const translations = {
+    pl: {
+      nav: {
+        about: 'O Instruktorze',
+        services: 'Usługi',
+        techniques: 'Techniki',
+        worldwide: 'Treningi na Świecie',
+        testimonials: 'Opinie',
+        contact: 'Kontakt',
+        book: 'Zarezerwuj'
+      },
+      hero: {
+        title: 'Opanuj Brazilian Jiu-Jitsu z ekspertem',
+        subtitle: 'Grzegorz Mirecki - Instruktor z czarnym pasem',
+        description: 'Dołącz do ekskluzywnych seminariów i warsztatów prowadzonych przez doświadczonego mistrza BJJ',
+        cta: 'Zarezerwuj Seminarium',
+        price: 'Seminaria od 1000 PLN'
+      },
+      about: {
+        title: 'O Instruktorze',
+        subtitle: 'Grzegorz Mirecki',
+        belt: 'Czarny Pas BJJ',
+        experience: '15+ lat doświadczenia',
+        students: '1000+ wyszkolonych uczniów',
+        seminars: '200+ przeprowadzonych seminariów',
+        bio1: 'Z pasją do Brazilian Jiu-Jitsu od ponad 15 lat, Grzegorz Mirecki jest uznanym instruktorem z czarnym pasem, który zdobył swoją wiedzę trenując z najlepszymi mistrzami na świecie.',
+        bio2: 'Jego filozofia nauczania opiera się na indywidualnym podejściu do każdego ucznia, łącząc tradycyjne techniki z nowoczesnymi metodami treningowymi.',
+        achievements: 'Osiągnięcia i Certyfikaty'
+      },
+      services: {
+        title: 'Nasze Usługi',
+        subtitle: 'Dostosowane programy dla każdego poziomu',
+        beginner: {
+          title: 'Warsztaty dla Początkujących',
+          desc: 'Podstawy BJJ, pozycje, ucieczki',
+          duration: '3 godziny',
+          group: 'Do 30 osób',
+          price: 'od 1000 PLN'
+        },
+        advanced: {
+          title: 'Zaawansowane Techniki',
+          desc: 'Złożone submissje, przejścia, strategie',
+          duration: '4 godziny',
+          group: 'Do 20 osób',
+          price: 'od 1500 PLN'
+        },
+        competition: {
+          title: 'Przygotowanie do Zawodów',
+          desc: 'Taktyka, kondycja, psychologia sportu',
+          duration: '2 dni',
+          group: 'Do 15 osób',
+          price: 'od 3000 PLN'
+        },
+        private: {
+          title: 'Sesje Indywidualne',
+          desc: 'Spersonalizowany trening 1-na-1',
+          duration: '2 godziny',
+          group: '1-2 osoby',
+          price: 'od 500 PLN/h'
         }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+      },
+      worldwide: {
+        title: 'Treningi na Całym Świecie',
+        subtitle: 'Dojadę wszędzie na świecie',
+        description: 'Organizuję seminaria i warsztaty w każdym zakątku globu. Niezależnie od lokalizacji, przywiozę najwyższej jakości trening BJJ do Twojego klubu.',
+        locations: 'Dotychczasowe lokalizacje',
+        cta: 'Zaproś mnie do swojego klubu'
+      },
+      techniques: {
+        title: 'Program i Techniki',
+        subtitle: 'Kompleksowy system nauczania',
+        categories: {
+          fundamentals: {
+            title: 'Podstawy',
+            items: ['Pozycje bazowe', 'Ucieczki', 'Podstawowe dźwignie', 'Kontrola dystansu']
+          },
+          intermediate: {
+            title: 'Średniozaawansowane',
+            items: ['Garda', 'Przejścia', 'Sweepy', 'Kombinacje']
+          },
+          advanced: {
+            title: 'Zaawansowane',
+            items: ['Berimbolo', 'Leg locks', 'Inverted guard', 'Łańcuchy ataków']
+          },
+          mental: {
+            title: 'Aspekt Mentalny',
+            items: ['Strategia walki', 'Zarządzanie stresem', 'Wizualizacja', 'Filozofia BJJ']
+          }
         }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
+      },
+      testimonials: {
+        title: 'Co Mówią Nasi Uczniowie',
+        subtitle: 'Historie sukcesu z całego świata'
+      },
+      contact: {
+        title: 'Zarezerwuj Seminarium',
+        subtitle: 'Skontaktuj się z nami już dziś',
+        form: {
+          name: 'Imię i nazwisko',
+          email: 'Email',
+          phone: 'Telefon',
+          location: 'Preferowana lokalizacja',
+          groupSize: 'Wielkość grupy',
+          experience: 'Poziom doświadczenia',
+          message: 'Wiadomość',
+          submit: 'Wyślij zapytanie'
+        },
+        info: {
+          available: 'Dostępny na całym świecie',
+          response: 'Odpowiedź w ciągu 24h',
+          whatsapp: 'WhatsApp: +48 123 456 789'
         }
-
-        nav ul {
-            display: flex;
-            list-style: none;
+      },
+      faq: {
+        title: 'Często Zadawane Pytania',
+        q1: 'Czy potrzebuję doświadczenia w BJJ?',
+        a1: 'Nie, oferujemy seminaria dla wszystkich poziomów, od początkujących po zaawansowanych.',
+        q2: 'Ile osób może uczestniczyć?',
+        a2: 'Grupy od 10 do 50 osób, w zależności od typu seminarium.',
+        q3: 'Czy dojeżdżasz poza Polskę?',
+        a3: 'Tak, organizuję seminaria na całym świecie.',
+        q4: 'Co powinienem przynieść?',
+        a4: 'Gi (kimono), rashguard, wodę i otwartą głowę do nauki.'
+      }
+    },
+    en: {
+      nav: {
+        about: 'About',
+        services: 'Services',
+        techniques: 'Techniques',
+        worldwide: 'Worldwide Training',
+        testimonials: 'Testimonials',
+        contact: 'Contact',
+        book: 'Book Now'
+      },
+      hero: {
+        title: 'Master Brazilian Jiu-Jitsu with an Expert',
+        subtitle: 'Grzegorz Mirecki - Black Belt Instructor',
+        description: 'Join exclusive seminars and workshops led by an experienced BJJ master',
+        cta: 'Book a Seminar',
+        price: 'Seminars from 1000 PLN'
+      },
+      about: {
+        title: 'About the Instructor',
+        subtitle: 'Grzegorz Mirecki',
+        belt: 'BJJ Black Belt',
+        experience: '15+ years of experience',
+        students: '1000+ trained students',
+        seminars: '200+ conducted seminars',
+        bio1: 'With a passion for Brazilian Jiu-Jitsu for over 15 years, Grzegorz Mirecki is a renowned black belt instructor who gained his knowledge training with the best masters in the world.',
+        bio2: 'His teaching philosophy is based on an individual approach to each student, combining traditional techniques with modern training methods.',
+        achievements: 'Achievements & Certifications'
+      },
+      services: {
+        title: 'Our Services',
+        subtitle: 'Tailored programs for every level',
+        beginner: {
+          title: 'Beginner Workshops',
+          desc: 'BJJ basics, positions, escapes',
+          duration: '3 hours',
+          group: 'Up to 30 people',
+          price: 'from 1000 PLN'
+        },
+        advanced: {
+          title: 'Advanced Techniques',
+          desc: 'Complex submissions, transitions, strategies',
+          duration: '4 hours',
+          group: 'Up to 20 people',
+          price: 'from 1500 PLN'
+        },
+        competition: {
+          title: 'Competition Preparation',
+          desc: 'Tactics, conditioning, sports psychology',
+          duration: '2 days',
+          group: 'Up to 15 people',
+          price: 'from 3000 PLN'
+        },
+        private: {
+          title: 'Private Sessions',
+          desc: 'Personalized 1-on-1 training',
+          duration: '2 hours',
+          group: '1-2 people',
+          price: 'from 500 PLN/h'
         }
-
-        nav ul li {
-            margin-left: 1.5rem;
+      },
+      worldwide: {
+        title: 'Training Worldwide',
+        subtitle: 'I travel anywhere in the world',
+        description: 'I organize seminars and workshops in every corner of the globe. Regardless of location, I will bring top-quality BJJ training to your club.',
+        locations: 'Previous locations',
+        cta: 'Invite me to your club'
+      },
+      techniques: {
+        title: 'Program & Techniques',
+        subtitle: 'Comprehensive teaching system',
+        categories: {
+          fundamentals: {
+            title: 'Fundamentals',
+            items: ['Basic positions', 'Escapes', 'Basic submissions', 'Distance control']
+          },
+          intermediate: {
+            title: 'Intermediate',
+            items: ['Guard play', 'Transitions', 'Sweeps', 'Combinations']
+          },
+          advanced: {
+            title: 'Advanced',
+            items: ['Berimbolo', 'Leg locks', 'Inverted guard', 'Attack chains']
+          },
+          mental: {
+            title: 'Mental Aspect',
+            items: ['Fight strategy', 'Stress management', 'Visualization', 'BJJ philosophy']
+          }
         }
-
-        nav ul li a {
-            color: var(--dark-text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
+      },
+      testimonials: {
+        title: 'What Our Students Say',
+        subtitle: 'Success stories from around the world'
+      },
+      contact: {
+        title: 'Book a Seminar',
+        subtitle: 'Contact us today',
+        form: {
+          name: 'Full name',
+          email: 'Email',
+          phone: 'Phone',
+          location: 'Preferred location',
+          groupSize: 'Group size',
+          experience: 'Experience level',
+          message: 'Message',
+          submit: 'Send inquiry'
+        },
+        info: {
+          available: 'Available worldwide',
+          response: 'Response within 24h',
+          whatsapp: 'WhatsApp: +48 123 456 789'
         }
+      },
+      faq: {
+        title: 'Frequently Asked Questions',
+        q1: 'Do I need BJJ experience?',
+        a1: 'No, we offer seminars for all levels, from beginners to advanced.',
+        q2: 'How many people can participate?',
+        a2: 'Groups from 10 to 50 people, depending on the seminar type.',
+        q3: 'Do you travel outside Poland?',
+        a3: 'Yes, I organize seminars worldwide.',
+        q4: 'What should I bring?',
+        a4: 'Gi (kimono), rashguard, water, and an open mind for learning.'
+      }
+    }
+  };
 
-        nav ul li a:hover {
-            color: var(--accent);
-        }
+  const t = translations[language];
 
-        .hero {
-            background: linear-gradient(rgba(46, 125, 50, 0.7), rgba(46, 125, 50, 0.8)), url('https://i.imgur.com/JvFQhKp.jpg') no-repeat center center/cover;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
+  const testimonials = [
+    {
+      name: 'Michał Kowalski',
+      role: language === 'pl' ? 'Niebieski pas' : 'Blue Belt',
+      text: language === 'pl' 
+        ? 'Seminarium z Grzegorzem kompletnie zmieniło moje podejście do BJJ. Jego sposób tłumaczenia technik jest jasny i przystępny.'
+        : 'The seminar with Grzegorz completely changed my approach to BJJ. His way of explaining techniques is clear and accessible.',
+      location: 'Warsaw, Poland',
+      rating: 5
+    },
+    {
+      name: 'Sarah Johnson',
+      role: language === 'pl' ? 'Purpurowy pas' : 'Purple Belt',
+      text: language === 'pl'
+        ? 'Najlepsze seminarium w jakim uczestniczyłam. Grzegorz ma niesamowitą umiejętność dostosowania nauczania do każdego poziomu.'
+        : 'Best seminar I\'ve attended. Grzegorz has an amazing ability to adapt his teaching to every level.',
+      location: 'London, UK',
+      rating: 5
+    },
+    {
+      name: 'Carlos Silva',
+      role: language === 'pl' ? 'Brązowy pas' : 'Brown Belt',
+      text: language === 'pl'
+        ? 'Techniki których nauczyłem się podczas seminarium znacząco poprawiły moją grę. Polecam każdemu!'
+        : 'The techniques I learned during the seminar significantly improved my game. Highly recommend!',
+      location: 'Rio de Janeiro, Brazil',
+      rating: 5
+    }
+  ];
 
-        .hero-content {
-            max-width: 800px;
-            padding: 2rem;
-        }
+  const locations = [
+    'Warsaw, Poland', 'Berlin, Germany', 'London, UK', 'Paris, France',
+    'New York, USA', 'Los Angeles, USA', 'Tokyo, Japan', 'Dubai, UAE',
+    'Sydney, Australia', 'São Paulo, Brazil', 'Moscow, Russia', 'Barcelona, Spain'
+  ];
 
-        .hero h1 {
-            font-size: 3.2rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-        }
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            font-weight: 300;
-        }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    alert(language === 'pl' ? 'Dziękujemy! Skontaktujemy się wkrótce.' : 'Thank you! We will contact you soon.');
+  };
 
-        .btn {
-            display: inline-block;
-            background: var(--accent);
-            color: var(--dark-text);
-            padding: 14px 32px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            box-shadow: var(--shadow);
-        }
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+    setIsMenuOpen(false);
+  };
 
-        .btn:hover {
-            background: #7CB342;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(139, 195, 74, 0.3);
-        }
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {/* Navigation */}
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${
+        scrolled ? 'bg-black/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+      }`}>
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
+                <span className="text-black font-bold text-xl">GM</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold">Grzegorz Mirecki</h1>
+                <p className="text-xs text-gray-400">Brazilian Jiu-Jitsu</p>
+              </div>
+            </div>
 
-        .section {
-            padding: 5rem 0;
-        }
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-8">
+              {Object.entries(t.nav).filter(([key]) => key !== 'book').map(([key, value]) => (
+                <button
+                  key={key}
+                  onClick={() => scrollToSection(key)}
+                  className="hover:text-yellow-400 transition-colors"
+                >
+                  {value}
+                </button>
+              ))}
+              <button
+                onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')}
+                className="flex items-center space-x-1 hover:text-yellow-400 transition-colors"
+              >
+                <Globe className="w-4 h-4" />
+                <span>{language === 'pl' ? 'EN' : 'PL'}</span>
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:shadow-yellow-400/50 transition-all"
+              >
+                {t.nav.book}
+              </button>
+            </div>
 
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--primary);
-            font-weight: 700;
-        }
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: var(--accent);
-            margin: 1rem auto;
-            border-radius: 2px;
-        }
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="lg:hidden bg-black/95 backdrop-blur-md border-t border-gray-800">
+              <div className="py-4 space-y-3">
+                {Object.entries(t.nav).filter(([key]) => key !== 'book').map(([key, value]) => (
+                  <button
+                    key={key}
+                    onClick={() => scrollToSection(key)}
+                    className="block w-full text-left px-4 py-2 hover:text-yellow-400 transition-colors"
+                  >
+                    {value}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')}
+                  className="block w-full text-left px-4 py-2 hover:text-yellow-400 transition-colors"
+                >
+                  <Globe className="w-4 h-4 inline mr-2" />
+                  {language === 'pl' ? 'English' : 'Polski'}
+                </button>
+                <button
+                  onClick={() => scrollToSection('contact')}
+                  className="mx-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-6 py-2 rounded-full font-semibold block text-center"
+                >
+                  {t.nav.book}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
 
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-50"></div>
+        
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 20% 50%, yellow 0%, transparent 50%), radial-gradient(circle at 80% 80%, yellow 0%, transparent 50%), radial-gradient(circle at 40% 80%, yellow 0%, transparent 50%)',
+            animation: 'pulse 4s ease-in-out infinite'
+          }}></div>
+        </div>
 
-        .about-img img {
-            width: 100%;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
+        <div className="relative container mx-auto px-4 py-20 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8 inline-block">
+              <span className="bg-yellow-400/20 text-yellow-400 px-4 py-2 rounded-full text-sm font-semibold">
+                {t.hero.price}
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {t.hero.title}
+            </h1>
+            <h2 className="text-2xl md:text-3xl mb-4 text-yellow-400">
+              {t.hero.subtitle}
+            </h2>
+            <p className="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
+              {t.hero.description}
+            </p>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-yellow-400/50 transition-all transform hover:scale-105"
+            >
+              {t.hero.cta}
+              <ArrowRight className="inline ml-2 w-5 h-5" />
+            </button>
+          </div>
+        </div>
 
-        .schedule {
-            background-color: var(--light-bg);
-        }
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+          }
+        `}</style>
+      </section>
 
-        .schedule-item {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s;
-            border-left: 4px solid var(--accent);
-        }
+      {/* About Section */}
+      <section id="about" className="py-20 bg-gray-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.about.title}</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto"></div>
+          </div>
 
-        .schedule-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(139, 195, 74, 0.15);
-        }
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg transform rotate-3"></div>
+              <div className="relative bg-gray-900 rounded-lg p-8">
+                <div className="w-48 h-48 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
+                  <Users className="w-24 h-24 text-yellow-400" />
+                </div>
+                <h3 className="text-3xl font-bold text-center mb-2">{t.about.subtitle}</h3>
+                <p className="text-yellow-400 text-center font-semibold mb-6">{t.about.belt}</p>
+                
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
+                    <p className="text-sm text-gray-400">15+</p>
+                  </div>
+                  <div>
+                    <Users className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
+                    <p className="text-sm text-gray-400">1000+</p>
+                  </div>
+                  <div>
+                    <Calendar className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
+                    <p className="text-sm text-gray-400">200+</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        .schedule-date {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
+            <div>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <Shield className="w-8 h-8 text-yellow-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h4 className="font-semibold text-xl mb-2">{t.about.experience}</h4>
+                    <p className="text-gray-400">{t.about.bio1}</p>
+                  </div>
+                </div>
 
-        .schedule-location {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
+                <div className="flex items-start space-x-4">
+                  <Target className="w-8 h-8 text-yellow-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h4 className="font-semibold text-xl mb-2">{t.about.students}</h4>
+                    <p className="text-gray-400">{t.about.bio2}</p>
+                  </div>
+                </div>
 
-        .price-tag {
-            display: inline-block;
-            background: var(--accent);
-            color: var(--dark-text);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-top: 1rem;
-            font-size: 0.95rem;
-        }
+                <div className="flex items-start space-x-4">
+                  <Award className="w-8 h-8 text-yellow-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h4 className="font-semibold text-xl mb-2">{t.about.achievements}</h4>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {['IBJJF Certified', 'Competition Winner', 'Elite Coach', 'Safety First'].map(cert => (
+                        <span key={cert} className="bg-yellow-400/20 text-yellow-400 px-3 py-1 rounded-full text-sm">
+                          {cert}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        .gallery-slider {
-            display: flex;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            gap: 1.5rem;
-            padding: 1.5rem 0;
-            scrollbar-width: thin;
-        }
+      {/* Services Section */}
+      <section id="services" className="py-20 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.services.title}</h2>
+            <p className="text-xl text-gray-400">{t.services.subtitle}</p>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
+          </div>
 
-        .gallery-slide {
-            min-width: 300px;
-            height: 300px;
-            border-radius: 12px;
-            background-size: cover;
-            background-position: center;
-            flex-shrink: 0;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s;
-        }
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {['beginner', 'advanced', 'competition', 'private'].map((service, index) => (
+              <div key={service} className="group relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity blur-xl"></div>
+                <div className="relative bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-yellow-400 transition-all h-full">
+                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    {index === 0 && <Heart className="w-8 h-8 text-black" />}
+                    {index === 1 && <Target className="w-8 h-8 text-black" />}
+                    {index === 2 && <Trophy className="w-8 h-8 text-black" />}
+                    {index === 3 && <Users className="w-8 h-8 text-black" />}
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-3 text-center">{t.services[service].title}</h3>
+                  <p className="text-gray-400 text-sm mb-4 text-center">{t.services[service].desc}</p>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500">
+                        <Clock className="w-4 h-4 inline mr-1" />
+                        {t.services[service].duration}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500">
+                        <Users className="w-4 h-4 inline mr-1" />
+                        {t.services[service].group}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-800">
+                    <p className="text-2xl font-bold text-yellow-400 text-center">
+                      {t.services[service].price}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        .gallery-slide:hover {
-            transform: scale(1.03);
-        }
+      {/* Worldwide Training Section */}
+      <section id="worldwide" className="py-20 bg-gray-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.worldwide.title}</h2>
+            <p className="text-2xl text-yellow-400 font-semibold mb-4">{t.worldwide.subtitle}</p>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">{t.worldwide.description}</p>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
+          </div>
 
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold text-center mb-8">{t.worldwide.locations}</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {locations.map((location) => (
+                <div key={location} className="bg-gray-900 rounded-lg p-4 border border-gray-800 hover:border-yellow-400 transition-colors">
+                  <MapPin className="w-5 h-5 text-yellow-400 inline mr-2" />
+                  <span className="text-gray-300">{location}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        .testimonial {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            border-top: 3px solid var(--accent);
-        }
+          <div className="text-center">
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-yellow-400/50 transition-all"
+            >
+              {t.worldwide.cta}
+              <ArrowRight className="inline ml-2 w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </section>
 
-        .testimonial p {
-            font-style: italic;
-            margin-bottom: 1.5rem;
-            color: var(--dark-text);
-            line-height: 1.7;
-        }
+      {/* Techniques Section */}
+      <section id="techniques" className="py-20 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.techniques.title}</h2>
+            <p className="text-xl text-gray-400">{t.techniques.subtitle}</p>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
+          </div>
 
-        .testimonial-author {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--white);
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(46, 125, 50, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark-text);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.2);
-        }
-
-        footer {
-            background: var(--primary);
-            color: var(--white);
-            padding: 3rem 0;
-            text-align: center;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 1.5rem 0;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-
-        .social-icons {
-            margin: 1.5rem 0;
-        }
-
-        .social-icons a {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border-radius: 50%;
-            line-height: 40px;
-            margin: 0 5px;
-            transition: all 0.3s;
-        }
-
-        .social-icons a:hover {
-            background: var(--accent);
-            color: var(--dark-text);
-            transform: translateY(-3px);
-        }
-
-        @media (max-width: 768px) {
-            .header-content { flex-direction: column; }
-            nav ul { margin-top: 1rem; }
-            nav ul li { margin: 0 0.5rem; }
-            .hero h1 { font-size: 2.5rem; }
-            .about-grid { grid-template-columns: 1fr; }
-            .section { padding: 3rem 0; }
-        }
-
-        .animate {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .animate.appear {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="container header-content">
-            <div class="logo">GM Jiu-Jitsu</div>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">O mnie</a></li>
-                    <li><a href="#schedule">Terminarz</a></li>
-                    <li><a href="#gallery">Galeria</a></li>
-                    <li><a href="#register">Zapisy</a></li>
-                    <li><a href="#contact">Kontakt</a></li>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Object.entries(t.techniques.categories).map(([key, category]) => (
+              <div key={key} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+                <h3 className="text-xl font-bold mb-4 text-yellow-400">{category.title}</h3>
+                <ul className="space-y-2">
+                  {category.items.map((item) => (
+                    <li key={item} className="flex items-start">
+                      <Check className="w-5 h-5 text-yellow-400 mr-2 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300">{item}</span>
+                    </li>
+                  ))}
                 </ul>
-            </nav>
+              </div>
+            ))}
+          </div>
         </div>
-    </header>
+      </section>
 
-    <section id="home" class="hero">
-        <div class="hero-content animate">
-            <h1>World Tour 2025<br>Grzegorz Mirecki</h1>
-            <p>Czarny pas BJJ zaprasza na międzynarodowe seminaria techniki, strategii i filozofii jiu-jitsu.</p>
-            <a href="#register" class="btn">Zapisz się teraz – 1000 zł / seminarium</a>
-        </div>
-    </section>
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gray-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.testimonials.title}</h2>
+            <p className="text-xl text-gray-400">{t.testimonials.subtitle}</p>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
+          </div>
 
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="section-title animate">O Instruktorze</h2>
-            <div class="about-grid">
-                <div class="about-img animate">
-                    <img src="https://i.imgur.com/9XkU0qL.jpg" alt="Grzegorz Mirecki - trening BJJ">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative bg-gray-900 rounded-lg p-8 border border-gray-800">
+              <div className="absolute -top-4 -left-4 text-6xl text-yellow-400 opacity-50">"</div>
+              
+              <div className="relative">
+                <p className="text-lg mb-6 text-gray-300 italic">
+                  {testimonials[activeTestimonial].text}
+                </p>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-white">{testimonials[activeTestimonial].name}</p>
+                    <p className="text-sm text-gray-400">{testimonials[activeTestimonial].role}</p>
+                    <p className="text-sm text-gray-500">
+                      <MapPin className="w-3 h-3 inline mr-1" />
+                      {testimonials[activeTestimonial].location}
+                    </p>
+                  </div>
+                  
+                  <div className="flex space-x-1">
+                    {[...Array(testimonials[activeTestimonial].rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
                 </div>
-                <div class="about-text animate">
-                    <h3>Grzegorz Mirecki – Czarny Pas BJJ</h3>
-                    <p>Posiadacz czarnego pasa w brazylijskim jiu-jitsu z ponad 15-letnim doświadczeniem trenera i zawodnika.</p>
-                    <p>Specjalizuje się w technikach ground game, przejściach pozycji oraz strategii walki sportowej.</p>
-                    <p>„Jiu-jitsu to nie tylko walka – to droga rozwoju osobistego.” – Grzegorz Mirecki</p>
-                </div>
+              </div>
             </div>
-        </div>
-    </section>
 
-    <section id="schedule" class="section schedule">
-        <div class="container">
-            <h2 class="section-title animate">Harmonogram Światowego Tour 2025</h2>
-            <div class="schedule-list">
-                <div class="schedule-item animate">
-                    <div class="schedule-date">📅 12–13 kwietnia 2025</div>
-                    <div class="schedule-location">📍 Warszawa, Polska</div>
-                    <p>Seminarium otwarcie sezonu – podstawy gry naziemnej.</p>
-                    <span class="price-tag">1000 zł</span>
-                </div>
-                <div class="schedule-item animate">
-                    <div class="schedule-date">📅 10–11 maja 2025</div>
-                    <div class="schedule-location">📍 Berlin, Niemcy</div>
-                    <p>Advanced Guard Passing & Submissions.</p>
-                    <span class="price-tag">1000 zł</span>
-                </div>
-                <div class="schedule-item animate">
-                    <div class="schedule-date">📅 7–8 czerwca 2025</div>
-                    <div class="schedule-location">📍 Barcelona, Hiszpania</div>
-                    <p>Summer Intensive – 2 dni pełne technik.</p>
-                    <span class="price-tag">1000 zł</span>
-                </div>
-                <div class="schedule-item animate">
-                    <div class="schedule-date">📅 13–14 września 2025</div>
-                    <div class="schedule-location">📍 Nowy Jork, USA</div>
-                    <p>Pressure Game & Leg Lock Defense.</p>
-                    <span class="price-tag">1000 zł</span>
-                </div>
-                <div class="schedule-item animate">
-                    <div class="schedule-date">📅 18–19 października 2025</div>
-                    <div class="schedule-location">📍 Tokio, Japonia</div>
-                    <p>Honoring the Roots – powrót do korzeni.</p>
-                    <span class="price-tag">1000 zł</span>
-                </div>
-                <div class="schedule-item animate">
-                    <div class="schedule-date">📅 15–16 listopada 2025</div>
-                    <div class="schedule-location">📍 São Paulo, Brazylia</div>
-                    <p>Finał światowego tour – Open Mat + Q&A.</p>
-                    <span class="price-tag">1000 zł</span>
-                </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTestimonial(index)}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    index === activeTestimonial ? 'bg-yellow-400' : 'bg-gray-700'
+                  }`}
+                />
+              ))}
             </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <section id="gallery" class="section" style="background-color: var(--light-bg);">
-        <div class="container">
-            <h2 class="section-title animate">Galeria — Miejsca i Atmosfera</h2>
-            <div class="gallery-slider">
-                <div class="gallery-slide" style="background-image: url('https://i.imgur.com/3oVgN7C.jpg');"></div>
-                <div class="gallery-slide" style="background-image: url('https://i.imgur.com/HM4nSfH.jpg');"></div>
-                <div class="gallery-slide" style="background-image: url('https://i.imgur.com/9bPmRzI.jpg');"></div>
-                <div class="gallery-slide" style="background-image: url('https://i.imgur.com/vYrWZcL.jpg');"></div>
-                <div class="gallery-slide" style="background-image: url('https://i.imgur.com/2T0ZQxP.jpg');"></div>
-                <div class="gallery-slide" style="background-image: url('https://i.imgur.com/5JZgLQe.jpg');"></div>
-            </div>
+      {/* FAQ Section */}
+      <section className="py-20 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.faq.title}</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto"></div>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-6">
+            {['q1', 'q2', 'q3', 'q4'].map((q, index) => (
+              <div key={q} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+                <h3 className="text-lg font-semibold mb-2 text-yellow-400">
+                  {t.faq[q]}
+                </h3>
+                <p className="text-gray-300">
+                  {t.faq[`a${index + 1}`]}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-    </section>
+      </section>
 
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title animate">Opinie Uczestników</h2>
-            <div class="testimonial-grid">
-                <div class="testimonial animate">
-                    <p>„Najlepsze seminarium jakie miałem okazję uczęszczać. GM przekazał nie tylko techniki, ale i mentalność.”</p>
-                    <div class="testimonial-author">— Adam K., Warszawa</div>
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.contact.title}</h2>
+            <p className="text-xl text-gray-400">{t.contact.subtitle}</p>
+            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <div>
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">{t.contact.form.name}</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">{t.contact.form.email}</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
+                    />
+                  </div>
                 </div>
-                <div class="testimonial animate">
-                    <p>„Poziom prowadzenia, indywidualne podejście i atmosfera — po prostu mistrzowskie.”</p>
-                    <div class="testimonial-author">— Lena M., Berlin</div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">{t.contact.form.phone}</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">{t.contact.form.location}</label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
+                    />
+                  </div>
                 </div>
-                <div class="testimonial animate">
-                    <p>„W Barcelonie nauczyłem się więcej w 2 dni niż w 6 miesięcy treningu.”</p>
-                    <div class="testimonial-author">— Carlos R., Madryt</div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">{t.contact.form.groupSize}</label>
+                    <select
+                      name="groupSize"
+                      value={formData.groupSize}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
+                    >
+                      <option value="">Select...</option>
+                      <option value="1-10">1-10</option>
+                      <option value="11-20">11-20</option>
+                      <option value="21-30">21-30</option>
+                      <option value="31-50">31-50</option>
+                      <option value="50+">50+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">{t.contact.form.experience}</label>
+                    <select
+                      name="experience"
+                      value={formData.experience}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
+                    >
+                      <option value="">Select...</option>
+                      <option value="beginner">{language === 'pl' ? 'Początkujący' : 'Beginner'}</option>
+                      <option value="intermediate">{language === 'pl' ? 'Średniozaawansowany' : 'Intermediate'}</option>
+                      <option value="advanced">{language === 'pl' ? 'Zaawansowany' : 'Advanced'}</option>
+                      <option value="mixed">{language === 'pl' ? 'Mieszany' : 'Mixed'}</option>
+                    </select>
+                  </div>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t.contact.form.message}</label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    rows="4"
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors resize-none"
+                  ></textarea>
+                </div>
+
+                <button
+                  onClick={handleSubmit}
+                  className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-8 py-4 rounded-lg font-bold text-lg hover:shadow-lg hover:shadow-yellow-400/50 transition-all"
+                >
+                  {t.contact.form.submit}
+                </button>
+              </div>
             </div>
+
+            <div className="space-y-8">
+              <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+                <h3 className="text-xl font-bold mb-4 text-yellow-400">Contact Information</h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <MapPin className="w-6 h-6 text-yellow-400" />
+                    <span>{t.contact.info.available}</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <Clock className="w-6 h-6 text-yellow-400" />
+                    <span>{t.contact.info.response}</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <MessageCircle className="w-6 h-6 text-yellow-400" />
+                    <span>{t.contact.info.whatsapp}</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <Mail className="w-6 h-6 text-yellow-400" />
+                    <span>grzegorz@bjjseminars.com</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <Phone className="w-6 h-6 text-yellow-400" />
+                    <span>+48 123 456 789</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg p-6 text-black">
+                <h3 className="text-xl font-bold mb-3">Special Offer!</h3>
+                <p className="mb-4">Book a seminar for 2025 and get 10% off for early booking.</p>
+                <button className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-900 transition-colors">
+                  Learn More
+                </button>
+              </div>
+
+              <div className="flex justify-center space-x-4">
+                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer">
+                  <span className="font-bold">f</span>
+                </div>
+                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer">
+                  <span className="font-bold">IG</span>
+                </div>
+                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer">
+                  <span className="font-bold">YT</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <section id="register" class="section" style="background: var(--light-bg);">
-        <div class="container">
-            <h2 class="section-title animate">Zapisz się na Seminarium</h2>
-            <div class="form-container">
-                <form id="registrationForm">
-                    <div class="form-group">
-                        <label for="name">Imię i Nazwisko *</label>
-                        <input type="text" id="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Telefon</label>
-                        <input type="tel" id="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="seminar">Wybierz Seminarium *</label>
-                        <select id="seminar" required>
-                            <option value="">-- Wybierz lokalizację i termin --</option>
-                            <option value="warsaw">Warszawa, 12–13 kwietnia 2025</option>
-                            <option value="berlin">Berlin, 10–11 maja 2025</option>
-                            <option value="barcelona">Barcelona, 7–8 czerwca 2025</option>
-                            <option value="nyc">Nowy Jork, 13–14 września 2025</option>
-                            <option value="tokyo">Tokio, 18–19 października 2025</option>
-                            <option value="saopaulo">São Paulo, 15–16 listopada 2025</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="belt">Twój pas</label>
-                        <select id="belt">
-                            <option value="white">Biały</option>
-                            <option value="blue">Niebieski</option>
-                            <option value="purple">Fioletowy</option>
-                            <option value="brown">Brązowy</option>
-                            <option value="black">Czarny</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Dodatkowe uwagi</label>
-                        <textarea id="message" placeholder="Chcesz coś dodać?"></textarea>
-                    </div>
-                    <button type="submit" class="btn">Zarejestruj się (1000 zł)</button>
-                </form>
-            </div>
+      {/* Footer */}
+      <footer className="bg-black border-t border-gray-800 py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p className="text-gray-400">
+              © 2025 Grzegorz Mirecki BJJ Seminars. All rights reserved.
+            </p>
+          </div>
         </div>
-    </section>
+      </footer>
+    </div>
+  );
+};
 
-    <section id="contact" class="section" style="background-color: var(--light-bg);">
-        <div class="container">
-            <h2 class="section-title animate">Kontakt</h2>
-            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 2rem;">Masz pytania? Napisz lub zadzwoń!</p>
-            <div style="text-align: center;">
-                <p><i class="fas fa-envelope"></i> kontakt@gm-jiujitsu.com</p>
-                <p><i class="fas fa-phone"></i> +48 123 456 789</p>
-                <p><i class="fas fa-map-marker-alt"></i> Siedziba: Warszawa, Polska</p>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <div class="logo" style="margin-bottom: 1rem; color: white;">GM Jiu-Jitsu</div>
-            <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#about">O mnie</a>
-                <a href="#schedule">Terminarz</a>
-                <a href="#gallery">Galeria</a>
-                <a href="#register">Zapisy</a>
-                <a href="#contact">Kontakt</a>
-            </div>
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-            <p style="margin-top: 2rem; font-size: 0.9rem;">&copy; 2025 Grzegorz Mirecki Jiu-Jitsu Seminars. Wszelkie prawa zastrzeżone.</p>
-        </div>
-    </footer>
-
-    <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('✅ Dziękujemy za rejestrację!\nSkontaktujemy się z Tobą w ciągu 24 godzin.');
-            this.reset();
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('appear');
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.animate').forEach(el => observer.observe(el));
-    </script>
-
-</body>
-</html>
+export default App;
