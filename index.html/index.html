@@ -1,916 +1,874 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, Globe, MapPin, Calendar, Users, Trophy, Star, Clock, Phone, Mail, MessageCircle, Check, ArrowRight, Award, Target, Shield, Heart } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usługi ogrodnicze Knurów - Grzegorz Mirecki | Ogrodnik powiat gliwicki</title>
+    <meta name="description" content="Profesjonalne usługi ogrodnicze w Knurowie i powiecie gliwickim. Koszenie, przycinanie, nawożenie. Rzetelny ogrodnik z dojazdem. Tel: 447 223 593.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        .gradient-bg { background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); }
+        .shadow-custom { box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.6s ease-out; }
+    </style>
+</head>
+<body class="antialiased text-gray-900">
 
-const App = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [language, setLanguage] = useState('pl');
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    location: '',
-    groupSize: '',
-    experience: '',
-    message: ''
-  });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const translations = {
-    pl: {
-      nav: {
-        about: 'O Instruktorze',
-        services: 'Usługi',
-        techniques: 'Techniki',
-        worldwide: 'Treningi na Świecie',
-        testimonials: 'Opinie',
-        contact: 'Kontakt',
-        book: 'Zarezerwuj'
-      },
-      hero: {
-        title: 'Opanuj Brazilian Jiu-Jitsu z ekspertem',
-        subtitle: 'Grzegorz Mirecki - Instruktor z czarnym pasem',
-        description: 'Dołącz do ekskluzywnych seminariów i warsztatów prowadzonych przez doświadczonego mistrza BJJ',
-        cta: 'Zarezerwuj Seminarium',
-        price: 'Seminaria od 1000 PLN'
-      },
-      about: {
-        title: 'O Instruktorze',
-        subtitle: 'Grzegorz Mirecki',
-        belt: 'Czarny Pas BJJ',
-        experience: '15+ lat doświadczenia',
-        students: '1000+ wyszkolonych uczniów',
-        seminars: '200+ przeprowadzonych seminariów',
-        bio1: 'Z pasją do Brazilian Jiu-Jitsu od ponad 15 lat, Grzegorz Mirecki jest uznanym instruktorem z czarnym pasem, który zdobył swoją wiedzę trenując z najlepszymi mistrzami na świecie.',
-        bio2: 'Jego filozofia nauczania opiera się na indywidualnym podejściu do każdego ucznia, łącząc tradycyjne techniki z nowoczesnymi metodami treningowymi.',
-        achievements: 'Osiągnięcia i Certyfikaty'
-      },
-      services: {
-        title: 'Nasze Usługi',
-        subtitle: 'Dostosowane programy dla każdego poziomu',
-        beginner: {
-          title: 'Warsztaty dla Początkujących',
-          desc: 'Podstawy BJJ, pozycje, ucieczki',
-          duration: '3 godziny',
-          group: 'Do 30 osób',
-          price: 'od 1000 PLN'
-        },
-        advanced: {
-          title: 'Zaawansowane Techniki',
-          desc: 'Złożone submissje, przejścia, strategie',
-          duration: '4 godziny',
-          group: 'Do 20 osób',
-          price: 'od 1500 PLN'
-        },
-        competition: {
-          title: 'Przygotowanie do Zawodów',
-          desc: 'Taktyka, kondycja, psychologia sportu',
-          duration: '2 dni',
-          group: 'Do 15 osób',
-          price: 'od 3000 PLN'
-        },
-        private: {
-          title: 'Sesje Indywidualne',
-          desc: 'Spersonalizowany trening 1-na-1',
-          duration: '2 godziny',
-          group: '1-2 osoby',
-          price: 'od 500 PLN/h'
-        }
-      },
-      worldwide: {
-        title: 'Treningi na Całym Świecie',
-        subtitle: 'Dojadę wszędzie na świecie',
-        description: 'Organizuję seminaria i warsztaty w każdym zakątku globu. Niezależnie od lokalizacji, przywiozę najwyższej jakości trening BJJ do Twojego klubu.',
-        locations: 'Dotychczasowe lokalizacje',
-        cta: 'Zaproś mnie do swojego klubu'
-      },
-      techniques: {
-        title: 'Program i Techniki',
-        subtitle: 'Kompleksowy system nauczania',
-        categories: {
-          fundamentals: {
-            title: 'Podstawy',
-            items: ['Pozycje bazowe', 'Ucieczki', 'Podstawowe dźwignie', 'Kontrola dystansu']
-          },
-          intermediate: {
-            title: 'Średniozaawansowane',
-            items: ['Garda', 'Przejścia', 'Sweepy', 'Kombinacje']
-          },
-          advanced: {
-            title: 'Zaawansowane',
-            items: ['Berimbolo', 'Leg locks', 'Inverted guard', 'Łańcuchy ataków']
-          },
-          mental: {
-            title: 'Aspekt Mentalny',
-            items: ['Strategia walki', 'Zarządzanie stresem', 'Wizualizacja', 'Filozofia BJJ']
-          }
-        }
-      },
-      testimonials: {
-        title: 'Co Mówią Nasi Uczniowie',
-        subtitle: 'Historie sukcesu z całego świata'
-      },
-      contact: {
-        title: 'Zarezerwuj Seminarium',
-        subtitle: 'Skontaktuj się z nami już dziś',
-        form: {
-          name: 'Imię i nazwisko',
-          email: 'Email',
-          phone: 'Telefon',
-          location: 'Preferowana lokalizacja',
-          groupSize: 'Wielkość grupy',
-          experience: 'Poziom doświadczenia',
-          message: 'Wiadomość',
-          submit: 'Wyślij zapytanie'
-        },
-        info: {
-          available: 'Dostępny na całym świecie',
-          response: 'Odpowiedź w ciągu 24h',
-          whatsapp: 'WhatsApp: +48 123 456 789'
-        }
-      },
-      faq: {
-        title: 'Często Zadawane Pytania',
-        q1: 'Czy potrzebuję doświadczenia w BJJ?',
-        a1: 'Nie, oferujemy seminaria dla wszystkich poziomów, od początkujących po zaawansowanych.',
-        q2: 'Ile osób może uczestniczyć?',
-        a2: 'Grupy od 10 do 50 osób, w zależności od typu seminarium.',
-        q3: 'Czy dojeżdżasz poza Polskę?',
-        a3: 'Tak, organizuję seminaria na całym świecie.',
-        q4: 'Co powinienem przynieść?',
-        a4: 'Gi (kimono), rashguard, wodę i otwartą głowę do nauki.'
-      }
-    },
-    en: {
-      nav: {
-        about: 'About',
-        services: 'Services',
-        techniques: 'Techniques',
-        worldwide: 'Worldwide Training',
-        testimonials: 'Testimonials',
-        contact: 'Contact',
-        book: 'Book Now'
-      },
-      hero: {
-        title: 'Master Brazilian Jiu-Jitsu with an Expert',
-        subtitle: 'Grzegorz Mirecki - Black Belt Instructor',
-        description: 'Join exclusive seminars and workshops led by an experienced BJJ master',
-        cta: 'Book a Seminar',
-        price: 'Seminars from 1000 PLN'
-      },
-      about: {
-        title: 'About the Instructor',
-        subtitle: 'Grzegorz Mirecki',
-        belt: 'BJJ Black Belt',
-        experience: '15+ years of experience',
-        students: '1000+ trained students',
-        seminars: '200+ conducted seminars',
-        bio1: 'With a passion for Brazilian Jiu-Jitsu for over 15 years, Grzegorz Mirecki is a renowned black belt instructor who gained his knowledge training with the best masters in the world.',
-        bio2: 'His teaching philosophy is based on an individual approach to each student, combining traditional techniques with modern training methods.',
-        achievements: 'Achievements & Certifications'
-      },
-      services: {
-        title: 'Our Services',
-        subtitle: 'Tailored programs for every level',
-        beginner: {
-          title: 'Beginner Workshops',
-          desc: 'BJJ basics, positions, escapes',
-          duration: '3 hours',
-          group: 'Up to 30 people',
-          price: 'from 1000 PLN'
-        },
-        advanced: {
-          title: 'Advanced Techniques',
-          desc: 'Complex submissions, transitions, strategies',
-          duration: '4 hours',
-          group: 'Up to 20 people',
-          price: 'from 1500 PLN'
-        },
-        competition: {
-          title: 'Competition Preparation',
-          desc: 'Tactics, conditioning, sports psychology',
-          duration: '2 days',
-          group: 'Up to 15 people',
-          price: 'from 3000 PLN'
-        },
-        private: {
-          title: 'Private Sessions',
-          desc: 'Personalized 1-on-1 training',
-          duration: '2 hours',
-          group: '1-2 people',
-          price: 'from 500 PLN/h'
-        }
-      },
-      worldwide: {
-        title: 'Training Worldwide',
-        subtitle: 'I travel anywhere in the world',
-        description: 'I organize seminars and workshops in every corner of the globe. Regardless of location, I will bring top-quality BJJ training to your club.',
-        locations: 'Previous locations',
-        cta: 'Invite me to your club'
-      },
-      techniques: {
-        title: 'Program & Techniques',
-        subtitle: 'Comprehensive teaching system',
-        categories: {
-          fundamentals: {
-            title: 'Fundamentals',
-            items: ['Basic positions', 'Escapes', 'Basic submissions', 'Distance control']
-          },
-          intermediate: {
-            title: 'Intermediate',
-            items: ['Guard play', 'Transitions', 'Sweeps', 'Combinations']
-          },
-          advanced: {
-            title: 'Advanced',
-            items: ['Berimbolo', 'Leg locks', 'Inverted guard', 'Attack chains']
-          },
-          mental: {
-            title: 'Mental Aspect',
-            items: ['Fight strategy', 'Stress management', 'Visualization', 'BJJ philosophy']
-          }
-        }
-      },
-      testimonials: {
-        title: 'What Our Students Say',
-        subtitle: 'Success stories from around the world'
-      },
-      contact: {
-        title: 'Book a Seminar',
-        subtitle: 'Contact us today',
-        form: {
-          name: 'Full name',
-          email: 'Email',
-          phone: 'Phone',
-          location: 'Preferred location',
-          groupSize: 'Group size',
-          experience: 'Experience level',
-          message: 'Message',
-          submit: 'Send inquiry'
-        },
-        info: {
-          available: 'Available worldwide',
-          response: 'Response within 24h',
-          whatsapp: 'WhatsApp: +48 123 456 789'
-        }
-      },
-      faq: {
-        title: 'Frequently Asked Questions',
-        q1: 'Do I need BJJ experience?',
-        a1: 'No, we offer seminars for all levels, from beginners to advanced.',
-        q2: 'How many people can participate?',
-        a2: 'Groups from 10 to 50 people, depending on the seminar type.',
-        q3: 'Do you travel outside Poland?',
-        a3: 'Yes, I organize seminars worldwide.',
-        q4: 'What should I bring?',
-        a4: 'Gi (kimono), rashguard, water, and an open mind for learning.'
-      }
-    }
-  };
-
-  const t = translations[language];
-
-  const testimonials = [
-    {
-      name: 'Michał Kowalski',
-      role: language === 'pl' ? 'Niebieski pas' : 'Blue Belt',
-      text: language === 'pl' 
-        ? 'Seminarium z Grzegorzem kompletnie zmieniło moje podejście do BJJ. Jego sposób tłumaczenia technik jest jasny i przystępny.'
-        : 'The seminar with Grzegorz completely changed my approach to BJJ. His way of explaining techniques is clear and accessible.',
-      location: 'Warsaw, Poland',
-      rating: 5
-    },
-    {
-      name: 'Sarah Johnson',
-      role: language === 'pl' ? 'Purpurowy pas' : 'Purple Belt',
-      text: language === 'pl'
-        ? 'Najlepsze seminarium w jakim uczestniczyłam. Grzegorz ma niesamowitą umiejętność dostosowania nauczania do każdego poziomu.'
-        : 'Best seminar I\'ve attended. Grzegorz has an amazing ability to adapt his teaching to every level.',
-      location: 'London, UK',
-      rating: 5
-    },
-    {
-      name: 'Carlos Silva',
-      role: language === 'pl' ? 'Brązowy pas' : 'Brown Belt',
-      text: language === 'pl'
-        ? 'Techniki których nauczyłem się podczas seminarium znacząco poprawiły moją grę. Polecam każdemu!'
-        : 'The techniques I learned during the seminar significantly improved my game. Highly recommend!',
-      location: 'Rio de Janeiro, Brazil',
-      rating: 5
-    }
-  ];
-
-  const locations = [
-    'Warsaw, Poland', 'Berlin, Germany', 'London, UK', 'Paris, France',
-    'New York, USA', 'Los Angeles, USA', 'Tokyo, Japan', 'Dubai, UAE',
-    'Sydney, Australia', 'São Paulo, Brazil', 'Moscow, Russia', 'Barcelona, Spain'
-  ];
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert(language === 'pl' ? 'Dziękujemy! Skontaktujemy się wkrótce.' : 'Thank you! We will contact you soon.');
-  };
-
-  const scrollToSection = (sectionId) => {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
-  };
-
-  return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
-      }`}>
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-xl">GM</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">Grzegorz Mirecki</h1>
-                <p className="text-xs text-gray-400">Brazilian Jiu-Jitsu</p>
-              </div>
+<!-- Navigation -->
+<nav id="navbar" class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md transition-all duration-300">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+                <span class="text-xl font-bold text-green-700">Grzegorz Mirecki</span>
+                <span class="ml-2 text-sm text-gray-600 hidden sm:inline">Usługi Ogrodnicze</span>
             </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {Object.entries(t.nav).filter(([key]) => key !== 'book').map(([key, value]) => (
-                <button
-                  key={key}
-                  onClick={() => scrollToSection(key)}
-                  className="hover:text-yellow-400 transition-colors"
-                >
-                  {value}
-                </button>
-              ))}
-              <button
-                onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')}
-                className="flex items-center space-x-1 hover:text-yellow-400 transition-colors"
-              >
-                <Globe className="w-4 h-4" />
-                <span>{language === 'pl' ? 'EN' : 'PL'}</span>
-              </button>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:shadow-yellow-400/50 transition-all"
-              >
-                {t.nav.book}
-              </button>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#start" class="hover:text-green-600 transition-colors">Start</a>
+                <a href="#uslugi" class="hover:text-green-600 transition-colors">Usługi</a>
+                <a href="#cennik" class="hover:text-green-600 transition-colors">Cennik</a>
+                <a href="#realizacje" class="hover:text-green-600 transition-colors">Realizacje</a>
+                <a href="#opinie" class="hover:text-green-600 transition-colors">Opinie</a>
+                <a href="#faq" class="hover:text-green-600 transition-colors">FAQ</a>
+                <a href="#kontakt" class="hover:text-green-600 transition-colors">Kontakt</a>
+                <a href="tel:447223593" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all">
+                    <i class="fas fa-phone mr-2"></i>447 223 593
+                </a>
             </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden"
-            >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2">
+                <i class="fas fa-bars text-2xl"></i>
             </button>
-          </div>
-
-          {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="lg:hidden bg-black/95 backdrop-blur-md border-t border-gray-800">
-              <div className="py-4 space-y-3">
-                {Object.entries(t.nav).filter(([key]) => key !== 'book').map(([key, value]) => (
-                  <button
-                    key={key}
-                    onClick={() => scrollToSection(key)}
-                    className="block w-full text-left px-4 py-2 hover:text-yellow-400 transition-colors"
-                  >
-                    {value}
-                  </button>
-                ))}
-                <button
-                  onClick={() => setLanguage(language === 'pl' ? 'en' : 'pl')}
-                  className="block w-full text-left px-4 py-2 hover:text-yellow-400 transition-colors"
-                >
-                  <Globe className="w-4 h-4 inline mr-2" />
-                  {language === 'pl' ? 'English' : 'Polski'}
-                </button>
-                <button
-                  onClick={() => scrollToSection('contact')}
-                  className="mx-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-6 py-2 rounded-full font-semibold block text-center"
-                >
-                  {t.nav.book}
-                </button>
-              </div>
-            </div>
-          )}
         </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-50"></div>
         
-        {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 20% 50%, yellow 0%, transparent 50%), radial-gradient(circle at 80% 80%, yellow 0%, transparent 50%), radial-gradient(circle at 40% 80%, yellow 0%, transparent 50%)',
-            animation: 'pulse 4s ease-in-out infinite'
-          }}></div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#start" class="block px-4 py-3 hover:bg-green-50">Start</a>
+            <a href="#uslugi" class="block px-4 py-3 hover:bg-green-50">Usługi</a>
+            <a href="#cennik" class="block px-4 py-3 hover:bg-green-50">Cennik</a>
+            <a href="#realizacje" class="block px-4 py-3 hover:bg-green-50">Realizacje</a>
+            <a href="#kontakt" class="block px-4 py-3 hover:bg-green-50">Kontakt</a>
+            <a href="tel:447223593" class="block bg-green-600 text-white text-center px-4 py-3">
+                Zadzwoń: 447 223 593
+            </a>
         </div>
-
-        <div className="relative container mx-auto px-4 py-20 text-center">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8 inline-block">
-              <span className="bg-yellow-400/20 text-yellow-400 px-4 py-2 rounded-full text-sm font-semibold">
-                {t.hero.price}
-              </span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              {t.hero.title}
-            </h1>
-            <h2 className="text-2xl md:text-3xl mb-4 text-yellow-400">
-              {t.hero.subtitle}
-            </h2>
-            <p className="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto">
-              {t.hero.description}
-            </p>
-            <button
-              onClick={() => scrollToSection('contact')}
-              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-yellow-400/50 transition-all transform hover:scale-105"
-            >
-              {t.hero.cta}
-              <ArrowRight className="inline ml-2 w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        <style jsx>{`
-          @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.2; }
-            50% { transform: scale(1.1); opacity: 0.3; }
-          }
-        `}</style>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 bg-gray-950">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.about.title}</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto"></div>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg transform rotate-3"></div>
-              <div className="relative bg-gray-900 rounded-lg p-8">
-                <div className="w-48 h-48 mx-auto mb-6 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                  <Users className="w-24 h-24 text-yellow-400" />
-                </div>
-                <h3 className="text-3xl font-bold text-center mb-2">{t.about.subtitle}</h3>
-                <p className="text-yellow-400 text-center font-semibold mb-6">{t.about.belt}</p>
-                
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
-                    <p className="text-sm text-gray-400">15+</p>
-                  </div>
-                  <div>
-                    <Users className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
-                    <p className="text-sm text-gray-400">1000+</p>
-                  </div>
-                  <div>
-                    <Calendar className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
-                    <p className="text-sm text-gray-400">200+</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <Shield className="w-8 h-8 text-yellow-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-xl mb-2">{t.about.experience}</h4>
-                    <p className="text-gray-400">{t.about.bio1}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <Target className="w-8 h-8 text-yellow-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-xl mb-2">{t.about.students}</h4>
-                    <p className="text-gray-400">{t.about.bio2}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <Award className="w-8 h-8 text-yellow-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-xl mb-2">{t.about.achievements}</h4>
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {['IBJJF Certified', 'Competition Winner', 'Elite Coach', 'Safety First'].map(cert => (
-                        <span key={cert} className="bg-yellow-400/20 text-yellow-400 px-3 py-1 rounded-full text-sm">
-                          {cert}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section id="services" className="py-20 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.services.title}</h2>
-            <p className="text-xl text-gray-400">{t.services.subtitle}</p>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {['beginner', 'advanced', 'competition', 'private'].map((service, index) => (
-              <div key={service} className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity blur-xl"></div>
-                <div className="relative bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-yellow-400 transition-all h-full">
-                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    {index === 0 && <Heart className="w-8 h-8 text-black" />}
-                    {index === 1 && <Target className="w-8 h-8 text-black" />}
-                    {index === 2 && <Trophy className="w-8 h-8 text-black" />}
-                    {index === 3 && <Users className="w-8 h-8 text-black" />}
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-3 text-center">{t.services[service].title}</h3>
-                  <p className="text-gray-400 text-sm mb-4 text-center">{t.services[service].desc}</p>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500">
-                        <Clock className="w-4 h-4 inline mr-1" />
-                        {t.services[service].duration}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500">
-                        <Users className="w-4 h-4 inline mr-1" />
-                        {t.services[service].group}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-800">
-                    <p className="text-2xl font-bold text-yellow-400 text-center">
-                      {t.services[service].price}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Worldwide Training Section */}
-      <section id="worldwide" className="py-20 bg-gray-950">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.worldwide.title}</h2>
-            <p className="text-2xl text-yellow-400 font-semibold mb-4">{t.worldwide.subtitle}</p>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">{t.worldwide.description}</p>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
-          </div>
-
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold text-center mb-8">{t.worldwide.locations}</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {locations.map((location) => (
-                <div key={location} className="bg-gray-900 rounded-lg p-4 border border-gray-800 hover:border-yellow-400 transition-colors">
-                  <MapPin className="w-5 h-5 text-yellow-400 inline mr-2" />
-                  <span className="text-gray-300">{location}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-center">
-            <button
-              onClick={() => scrollToSection('contact')}
-              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-yellow-400/50 transition-all"
-            >
-              {t.worldwide.cta}
-              <ArrowRight className="inline ml-2 w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Techniques Section */}
-      <section id="techniques" className="py-20 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.techniques.title}</h2>
-            <p className="text-xl text-gray-400">{t.techniques.subtitle}</p>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Object.entries(t.techniques.categories).map(([key, category]) => (
-              <div key={key} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-                <h3 className="text-xl font-bold mb-4 text-yellow-400">{category.title}</h3>
-                <ul className="space-y-2">
-                  {category.items.map((item) => (
-                    <li key={item} className="flex items-start">
-                      <Check className="w-5 h-5 text-yellow-400 mr-2 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-300">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-gray-950">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.testimonials.title}</h2>
-            <p className="text-xl text-gray-400">{t.testimonials.subtitle}</p>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="relative bg-gray-900 rounded-lg p-8 border border-gray-800">
-              <div className="absolute -top-4 -left-4 text-6xl text-yellow-400 opacity-50">"</div>
-              
-              <div className="relative">
-                <p className="text-lg mb-6 text-gray-300 italic">
-                  {testimonials[activeTestimonial].text}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-white">{testimonials[activeTestimonial].name}</p>
-                    <p className="text-sm text-gray-400">{testimonials[activeTestimonial].role}</p>
-                    <p className="text-sm text-gray-500">
-                      <MapPin className="w-3 h-3 inline mr-1" />
-                      {testimonials[activeTestimonial].location}
-                    </p>
-                  </div>
-                  
-                  <div className="flex space-x-1">
-                    {[...Array(testimonials[activeTestimonial].rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center mt-6 space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    index === activeTestimonial ? 'bg-yellow-400' : 'bg-gray-700'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.faq.title}</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto"></div>
-          </div>
-
-          <div className="max-w-3xl mx-auto space-y-6">
-            {['q1', 'q2', 'q3', 'q4'].map((q, index) => (
-              <div key={q} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-                <h3 className="text-lg font-semibold mb-2 text-yellow-400">
-                  {t.faq[q]}
-                </h3>
-                <p className="text-gray-300">
-                  {t.faq[`a${index + 1}`]}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-gray-950">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t.contact.title}</h2>
-            <p className="text-xl text-gray-400">{t.contact.subtitle}</p>
-            <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 mx-auto mt-4"></div>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            <div>
-              <div className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">{t.contact.form.name}</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">{t.contact.form.email}</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">{t.contact.form.phone}</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">{t.contact.form.location}</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">{t.contact.form.groupSize}</label>
-                    <select
-                      name="groupSize"
-                      value={formData.groupSize}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
-                    >
-                      <option value="">Select...</option>
-                      <option value="1-10">1-10</option>
-                      <option value="11-20">11-20</option>
-                      <option value="21-30">21-30</option>
-                      <option value="31-50">31-50</option>
-                      <option value="50+">50+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">{t.contact.form.experience}</label>
-                    <select
-                      name="experience"
-                      value={formData.experience}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors"
-                    >
-                      <option value="">Select...</option>
-                      <option value="beginner">{language === 'pl' ? 'Początkujący' : 'Beginner'}</option>
-                      <option value="intermediate">{language === 'pl' ? 'Średniozaawansowany' : 'Intermediate'}</option>
-                      <option value="advanced">{language === 'pl' ? 'Zaawansowany' : 'Advanced'}</option>
-                      <option value="mixed">{language === 'pl' ? 'Mieszany' : 'Mixed'}</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">{t.contact.form.message}</label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows="4"
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg focus:border-yellow-400 focus:outline-none transition-colors resize-none"
-                  ></textarea>
-                </div>
-
-                <button
-                  onClick={handleSubmit}
-                  className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-8 py-4 rounded-lg font-bold text-lg hover:shadow-lg hover:shadow-yellow-400/50 transition-all"
-                >
-                  {t.contact.form.submit}
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-8">
-              <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-                <h3 className="text-xl font-bold mb-4 text-yellow-400">Contact Information</h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <MapPin className="w-6 h-6 text-yellow-400" />
-                    <span>{t.contact.info.available}</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <Clock className="w-6 h-6 text-yellow-400" />
-                    <span>{t.contact.info.response}</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <MessageCircle className="w-6 h-6 text-yellow-400" />
-                    <span>{t.contact.info.whatsapp}</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <Mail className="w-6 h-6 text-yellow-400" />
-                    <span>grzegorz@bjjseminars.com</span>
-                  </div>
-                  
-                  <div className="flex items-center space-x-4">
-                    <Phone className="w-6 h-6 text-yellow-400" />
-                    <span>+48 123 456 789</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg p-6 text-black">
-                <h3 className="text-xl font-bold mb-3">Special Offer!</h3>
-                <p className="mb-4">Book a seminar for 2025 and get 10% off for early booking.</p>
-                <button className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-900 transition-colors">
-                  Learn More
-                </button>
-              </div>
-
-              <div className="flex justify-center space-x-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer">
-                  <span className="font-bold">f</span>
-                </div>
-                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer">
-                  <span className="font-bold">IG</span>
-                </div>
-                <div className="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-black transition-colors cursor-pointer">
-                  <span className="font-bold">YT</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-black border-t border-gray-800 py-8">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="text-gray-400">
-              © 2025 Grzegorz Mirecki BJJ Seminars. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
-  );
-};
+</nav>
 
-export default App;
+<!-- Hero Section -->
+<section id="start" class="pt-20 pb-16 gradient-bg">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row items-center gap-12 py-12 animate-fade">
+            <div class="flex-1 text-center lg:text-left">
+                <div class="flex items-center justify-center lg:justify-start mb-4">
+                    <i class="fas fa-map-marker-alt text-green-600 mr-2"></i>
+                    <span class="text-gray-600">Knurów i powiat gliwicki</span>
+                </div>
+                
+                <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                    Usługi ogrodnicze w Knurowie i okolicach
+                </h1>
+                
+                <p class="text-xl text-gray-700 mb-6">
+                    Profesjonalna pielęgnacja Twojego ogrodu przez cały rok
+                </p>
+                
+                <p class="text-gray-600 mb-8">
+                    Grzegorz Mirecki – lokalny ogrodnik z Knurowa. 
+                    Zajmuję się kompleksową pielęgnacją ogrodów prywatnych 
+                    i firmowych w powiecie gliwickim.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+                    <a href="#kontakt" class="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-all transform hover:scale-105 inline-flex items-center justify-center">
+                        Zamów bezpłatną wycenę
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="tel:447223593" class="border-2 border-green-600 text-green-600 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-all inline-flex items-center justify-center">
+                        <i class="fas fa-phone mr-2"></i>
+                        447 223 593
+                    </a>
+                </div>
+
+                <p class="text-sm text-gray-500">
+                    <i class="fas fa-check-circle text-green-600 mr-1"></i>
+                    Wycena po oględzinach ogrodu • Bez zobowiązań
+                </p>
+            </div>
+
+            <div class="flex-1">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop" 
+                         alt="Profesjonalna pielęgnacja ogrodu w Knurowie" 
+                         class="rounded-2xl shadow-2xl w-full">
+                    <div class="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                            <span class="font-semibold">Dojazd w całym powiecie</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dla kogo Section -->
+<section id="dla-kogo" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Dla kogo pracuję?</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Pomagam właścicielom ogrodów w Knurowie i powiecie gliwickim utrzymać zieleń w doskonałym stanie.
+        </p>
+        
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div class="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-home text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3">Właściciele domów</h3>
+                <ul class="text-gray-600 space-y-2 text-left">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Regularna pielęgnacja ogrodu</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Sezonowe porządki</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Pomoc przy większych pracach</li>
+                </ul>
+            </div>
+            
+            <div class="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-building text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3">Wspólnoty mieszkaniowe</h3>
+                <ul class="text-gray-600 space-y-2 text-left">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Utrzymanie terenów zielonych</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Koszenie trawników</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Pielęgnacja żywopłotów</li>
+                </ul>
+            </div>
+            
+            <div class="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-briefcase text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mb-3">Małe firmy</h3>
+                <ul class="text-gray-600 space-y-2 text-left">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Reprezentacyjny wygląd</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Regularne koszenie</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i>Sezonowe nasadzenia</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="#kontakt" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                Sprawdź, jak mogę pomóc
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            <p class="text-sm text-gray-500 mt-2">Dojazd w całym powiecie gliwickim</p>
+        </div>
+    </div>
+</section>
+
+<!-- Usługi Section -->
+<section id="uslugi" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Zakres usług ogrodniczych</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Kompleksowa pielęgnacja ogrodów w Knurowie i powiecie gliwickim
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Pielęgnacja roślin -->
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="text-green-600 mb-4">
+                    <i class="fas fa-cut text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Pielęgnacja roślin</h3>
+                <p class="text-gray-600 mb-4">Dbam o zdrowie i wygląd Twoich roślin przez cały sezon wegetacyjny.</p>
+                <ul class="space-y-2 mb-6">
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Przycinanie drzew i krzewów ozdobnych</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Formowanie żywopłotów (tuje, bukszpany)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Cięcie sanitarne i odmładzające</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Ochrona przed chorobami i szkodnikami</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Podlewanie w okresach suszy</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Wsparcie dla osłabionych roślin</span>
+                    </li>
+                </ul>
+                <a href="#kontakt" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
+                    Umów przycinanie
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Nawożenie -->
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="text-green-600 mb-4">
+                    <i class="fas fa-tint text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Nawożenie</h3>
+                <p class="text-gray-600 mb-4">Dobieram odpowiednie nawozy do typu gleby i potrzeb roślin.</p>
+                <ul class="space-y-2 mb-6">
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Nawożenie trawników wiosną i jesienią</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Wertykulacja i aeracja trawnika</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Nawożenie drzew i krzewów</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Kompostowanie i mulczowanie</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Analiza potrzeb glebowych</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Dobór terminów nawożenia</span>
+                    </li>
+                </ul>
+                <a href="#kontakt" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
+                    Zamów nawożenie
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Ogólne prace -->
+            <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <div class="text-green-600 mb-4">
+                    <i class="fas fa-seedling text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Ogólne prace ogrodnicze</h3>
+                <p class="text-gray-600 mb-4">Wykonuję wszystkie standardowe prace utrzymaniowe w ogrodzie.</p>
+                <ul class="space-y-2 mb-6">
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Koszenie trawników (kosiarka/podkaszarka)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Odchwaszczanie rabat i ścieżek</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Nasadzenia sezonowe (bratki, begonie)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Porządki wiosenne (grabienie, czyszczenie)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Porządki jesienne (liście, przygotowanie do zimy)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-600 mr-2">•</span>
+                        <span class="text-gray-700 text-sm">Zakładanie i renowacja trawników</span>
+                    </li>
+                </ul>
+                <a href="tel:447223593" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
+                    Zadzwoń: 447 223 593
+                    <i class="fas fa-phone ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Jak pracuję Section -->
+<section id="jak-pracuje" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Proces realizacji – od kontaktu do efektu</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Prosty i przejrzysty proces współpracy
+        </p>
+        
+        <div class="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+                <h3 class="font-bold mb-2">Kontakt</h3>
+                <p class="text-gray-600 text-sm">Dzwonisz lub wypełniasz formularz. Umawiamy termin oględzin.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+                <h3 class="font-bold mb-2">Oględziny i pomiar</h3>
+                <p class="text-gray-600 text-sm">Przyjeżdżam, oglądam ogród, mierzę powierzchnię. Słucham Twoich potrzeb.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+                <h3 class="font-bold mb-2">Wycena</h3>
+                <p class="text-gray-600 text-sm">W ciągu 24h otrzymujesz konkretną wycenę. Cena zależy od metrażu i zakresu prac.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+                <h3 class="font-bold mb-2">Realizacja</h3>
+                <p class="text-gray-600 text-sm">Po akceptacji wykonuję pracę w umówionym terminie. Sprzątam po sobie.</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="#kontakt" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                Rozpocznij współpracę
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            <p class="text-sm text-gray-500 mt-2">Większość wycen tego samego dnia</p>
+        </div>
+    </div>
+</section>
+
+<!-- Cennik Section -->
+<section id="cennik" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Cennik usług – uczciwe stawki</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Ceny ustalam indywidualnie na podstawie metrażu ogrodu i zakresu prac. 
+            Poniżej orientacyjne stawki typowe dla Knurowa i powiatu gliwickiego.
+        </p>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div class="bg-white rounded-lg p-6 shadow">
+                <h3 class="font-bold text-lg mb-3 text-green-700">Koszenie trawnika</h3>
+                <p class="text-3xl font-bold text-gray-900">0,50-1,20 zł<span class="text-base font-normal">/m²</span></p>
+                <p class="text-sm text-gray-600 mt-2">Minimalne zlecenie: 50 zł</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow">
+                <h3 class="font-bold text-lg mb-3 text-green-700">Przycinanie żywopłotu</h3>
+                <p class="text-3xl font-bold text-gray-900">15-25 zł<span class="text-base font-normal">/mb</span></p>
+                <p class="text-sm text-gray-600 mt-2">Formowanie: 20-35 zł/mb</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow">
+                <h3 class="font-bold text-lg mb-3 text-green-700">Wertykulacja trawnika</h3>
+                <p class="text-3xl font-bold text-gray-900">1,00-1,50 zł<span class="text-base font-normal">/m²</span></p>
+                <p class="text-sm text-gray-600 mt-2">Z nawożeniem: 1,50-2,00 zł/m²</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow">
+                <h3 class="font-bold text-lg mb-3 text-green-700">Prace porządkowe</h3>
+                <p class="text-3xl font-bold text-gray-900">35-50 zł<span class="text-base font-normal">/godz</span></p>
+                <p class="text-sm text-gray-600 mt-2">Grabienie liści: 0,80-1,20 zł/m²</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow md:col-span-2 lg:col-span-2">
+                <h3 class="font-bold text-lg mb-3 text-green-700">Kompleksowa pielęgnacja miesięczna</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900">Od 300 zł</p>
+                        <p class="text-sm text-gray-600">Ogrody do 200 m²</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900">400-800 zł</p>
+                        <p class="text-sm text-gray-600">Ogrody 200-500 m²</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-3xl mx-auto mt-8">
+            <h4 class="font-bold mb-3 text-blue-900">Co wpływa na cenę?</h4>
+            <ul class="grid md:grid-cols-2 gap-2 text-sm text-blue-800">
+                <li><i class="fas fa-check-circle mr-2"></i>Wielkość ogrodu (metraż)</li>
+                <li><i class="fas fa-check-circle mr-2"></i>Stan zaniedbania terenu</li>
+                <li><i class="fas fa-check-circle mr-2"></i>Częstotliwość usług (abonament taniej)</li>
+                <li><i class="fas fa-check-circle mr-2"></i>Utylizacja odpadów zielonych</li>
+            </ul>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="#kontakt" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                Poproś o dokładną wycenę
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+            <p class="text-sm text-gray-500 mt-2">Wszystkie ceny są orientacyjne • Dokładna wycena po oględzinach</p>
+        </div>
+    </div>
+</section>
+
+<!-- Realizacje Section -->
+<section id="realizacje" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Przykładowe realizacje w Knurowie</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Każda realizacja dokumentowana fotograficznie
+        </p>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <img src="https://images.unsplash.com/photo-1558904541-efa843a96f01?w=400&h=250&fit=crop" 
+                     alt="Odnowiony trawnik w ogrodzie przydomowym w Knurowie" 
+                     class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="font-bold text-lg mb-2">Ogród przy ul. Dworcowej</h3>
+                    <p class="text-gray-600 text-sm mb-3">Kompleksowa renowacja zaniedbanego trawnika 350 m². Wertykulacja, dosiew, nawożenie.</p>
+                    <p class="text-green-600 font-semibold text-sm">Efekt widoczny po 3 tygodniach</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <img src="https://images.unsplash.com/photo-1584479898061-15742e14f50d?w=400&h=250&fit=crop" 
+                     alt="Przystrzyżony żywopłot na osiedlu w Szczygłowicach" 
+                     class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="font-bold text-lg mb-2">Osiedle mieszkaniowe Szczygłowice</h3>
+                    <p class="text-gray-600 text-sm mb-3">Regularne koszenie 1200 m² terenów zielonych. Formowanie 80 mb żywopłotu.</p>
+                    <p class="text-green-600 font-semibold text-sm">Współpraca od kwietnia 2023</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=250&fit=crop" 
+                     alt="Ogrodnik przycina krzewy ozdobne w Gierałtowicach" 
+                     class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="font-bold text-lg mb-2">Dom jednorodzinny Gierałtowice</h3>
+                    <p class="text-gray-600 text-sm mb-3">Wiosenne porządki, przycięcie 15 krzewów ozdobnych. Nawożenie trawnika 400 m².</p>
+                    <p class="text-green-600 font-semibold text-sm">Nasadzenie bratków</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="#kontakt" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                Zobacz więcej realizacji
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Opinie Section -->
+<section id="opinie" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-12">Co mówią klienci?</h2>
+        
+        <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex mb-4">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                </div>
+                <p class="text-gray-600 mb-4 italic">"Pan Grzegorz regularnie kosi nam trawnik. Zawsze punktualnie, dokładnie i w dobrej cenie. Polecam!"</p>
+                <p class="font-semibold">Anna K.</p>
+                <p class="text-sm text-gray-500">Knurów</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex mb-4">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                </div>
+                <p class="text-gray-600 mb-4 italic">"Świetne przycinanie tui. Żywopłot wygląda jak nowy. Fachowe podejście i rzetelna wycena."</p>
+                <p class="font-semibold">Marek S.</p>
+                <p class="text-sm text-gray-500">powiat gliwicki</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow">
+                <div class="flex mb-4">
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                    <i class="fas fa-star text-yellow-400"></i>
+                </div>
+                <p class="text-gray-600 mb-4 italic">"Ratował mój ogród po zimie. Wertykulacja i nawożenie zrobiły cuda. Trawnik znów zielony."</p>
+                <p class="font-semibold">Katarzyna P.</p>
+                <p class="text-sm text-gray-500">Knurów-Szczygłowice</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="#kontakt" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                Dołącz do zadowolonych klientów
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- O mnie Section -->
+<section id="o-mnie" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/3">
+                <img src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=400&h=400&fit=crop" 
+                     alt="Grzegorz Mirecki - ogrodnik" 
+                     class="rounded-full shadow-xl w-64 h-64 object-cover mx-auto">
+            </div>
+            <div class="md:w-2/3">
+                <h2 class="text-3xl font-bold mb-4">Grzegorz Mirecki – Twój lokalny ogrodnik</h2>
+                <p class="text-gray-600 mb-4">
+                    Jestem ogrodnikiem z Knurowa wykonującym prace osobiście. Każdy ogród traktuję indywidualnie, 
+                    dbając o szczegóły i końcowy efekt. Posiadam niezbędne kwalifikacje i regularnie poszerzam 
+                    wiedzę na kursach branżowych.
+                </p>
+                <p class="text-gray-600 mb-6">
+                    Stawiam na uczciwość, terminowość i rzetelne wykonanie każdego zlecenia. 
+                    Twoja satysfakcja jest moim priorytetem.
+                </p>
+                <a href="tel:447223593" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                    <i class="fas fa-phone mr-2"></i>
+                    Zadzwoń i porozmawiajmy: 447 223 593
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-12">Najczęściej zadawane pytania</h2>
+        
+        <div class="max-w-3xl mx-auto space-y-4">
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Jaki jest minimalny metraż zlecenia?</summary>
+                <p class="text-gray-600 mt-3">Nie mam sztywnego minimum. Małe ogrody też obsługuję, choć przy bardzo małych powierzchniach obowiązuje minimalna kwota zlecenia 50 zł.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Jak ustalasz cenę?</summary>
+                <p class="text-gray-600 mt-3">Cena zależy głównie od metrażu ogrodu i zakresu prac. Po oględzinach otrzymasz konkretną wycenę.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">W jakich terminach pracujesz?</summary>
+                <p class="text-gray-600 mt-3">Pracuję od poniedziałku do soboty. Terminy ustalam indywidualnie, zazwyczaj z wyprzedzeniem 2-5 dni.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Czy dojeżdżasz poza Knurów?</summary>
+                <p class="text-gray-600 mt-3">Tak, obsługuję cały powiat gliwicki: Gierałtowice, Pilchowice, Rudziniec, Sośnicowice, Pyskowice, Toszek, Wielowieś.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Czy doradzasz w pielęgnacji?</summary>
+                <p class="text-gray-600 mt-3">Oczywiście. Po wykonaniu usługi zawsze informuję, jak dbać o ogród między wizytami.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Jak mogę zapłacić?</summary>
+                <p class="text-gray-600 mt-3">Przyjmuję płatność gotówką lub przelewem. Wystawiam paragony, na życzenie faktury VAT.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Czy usuwasz odpady zielone?</summary>
+                <p class="text-gray-600 mt-3">Tak, mogę wywieźć skoszoną trawę i gałęzie. Koszt utylizacji wliczam w wycenę.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Czy pracujesz w deszczu?</summary>
+                <p class="text-gray-600 mt-3">Niektóre prace (np. koszenie) przekładam na suchy dzień. O zmianach informuję z wyprzedzeniem.</p>
+            </details>
+            
+            <details class="bg-white rounded-lg shadow p-6 cursor-pointer">
+                <summary class="font-bold text-lg">Czy oferujesz umowy abonamentowe?</summary>
+                <p class="text-gray-600 mt-3">Tak, przy regularnej współpracy (np. cotygodniowe koszenie) oferuję korzystniejsze stawki.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- Obszar działania Section -->
+<section id="obszar" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Gdzie świadczę usługi?</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Dojazd do 20 km od Knurowa
+        </p>
+        
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div>
+                <h3 class="font-bold text-lg mb-4 text-green-700">Główne lokalizacje:</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Knurów (wszystkie dzielnice)</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Gierałtowice</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Pilchowice</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Pyskowice</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Czerwionka-Leszczyny</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-bold text-lg mb-4 text-green-700">Powiat gliwicki:</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Rudziniec</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Sośnicowice</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Toszek</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Wielowieś</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Wszystkie miejscowości</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-bold text-lg mb-4 text-green-700">Miasta ościenne:</h3>
+                <ul class="space-y-2 text-gray-600">
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Gliwice (wybrane dzielnice)</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Zabrze (dzielnice południowe)</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Mikołów (na zapytanie)</li>
+                    <li><i class="fas fa-map-marker-alt text-green-500 mr-2"></i>Rybnik (północne dzielnice)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="#kontakt" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all inline-flex items-center">
+                Sprawdź dostępność w Twojej lokalizacji
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Kontakt Section -->
+<section id="kontakt" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-4">Skontaktuj się – chętnie pomogę</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Wypełnij formularz lub zadzwoń. Wycena po oględzinach ogrodu.
+        </p>
+
+        <div class="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <!-- Formularz -->
+            <div class="bg-white rounded-xl p-8 shadow-lg">
+                <h3 class="text-xl font-bold mb-6">Formularz kontaktowy</h3>
+                
+                <form id="contact-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Imię i nazwisko*
+                        </label>
+                        <input type="text" name="name" required
+                               placeholder="Jan Kowalski"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Telefon*
+                        </label>
+                        <input type="tel" name="phone" required
+                               placeholder="600 123 456"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            E-mail
+                        </label>
+                        <input type="email" name="email"
+                               placeholder="jan@example.com"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Metraż ogrodu [m²]*
+                        </label>
+                        <input type="text" name="area" required
+                               placeholder="np. 300"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Opis zlecenia*
+                        </label>
+                        <textarea name="message" rows="4" required
+                                  placeholder="Opisz, jakiej pomocy potrzebujesz..."
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"></textarea>
+                    </div>
+
+                    <div class="text-xs text-gray-500 bg-gray-100 p-3 rounded">
+                        Wyrażam zgodę na kontakt w sprawie wyceny usług ogrodniczych. 
+                        Administratorem danych jest Grzegorz Mirecki. 
+                        Dane przetwarzane są wyłącznie w celu realizacji zapytania.
+                    </div>
+
+                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Wyślij zapytanie
+                    </button>
+                </form>
+                
+                <div id="form-success" class="hidden bg-green-50 border border-green-200 rounded-lg p-6 text-center mt-4">
+                    <i class="fas fa-check-circle text-green-600 text-3xl mb-3"></i>
+                    <p class="text-green-800 font-semibold">Dziękuję za wiadomość!</p>
+                    <p class="text-green-700 text-sm mt-2">Odezwę się w ciągu 24 godzin.</p>
+                </div>
+            </div>
+
+            <!-- Dane kontaktowe -->
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold mb-6">Dane kontaktowe</h3>
+                
+                <a href="tel:447223593" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                    <i class="fas fa-phone text-green-600 text-xl mr-4"></i>
+                    <div>
+                        <p class="font-semibold">Telefon</p>
+                        <p class="text-green-600 text-lg">447 223 593</p>
+                    </div>
+                </a>
+
+                <a href="mailto:grzegorz.mirecki01@gmail.com" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-envelope text-gray-600 text-xl mr-4"></i>
+                    <div>
+                        <p class="font-semibold">E-mail</p>
+                        <p class="text-gray-600">grzegorz.mirecki01@gmail.com</p>
+                    </div>
+                </a>
+
+                <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                    <i class="fas fa-map-marker-alt text-gray-600 text-xl mr-4"></i>
+                    <div>
+                        <p class="font-semibold">Obszar działania</p>
+                        <p class="text-gray-600">Knurów i powiat gliwicki</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                    <i class="fas fa-clock text-gray-600 text-xl mr-4"></i>
+                    <div>
+                        <p class="font-semibold">Godziny pracy</p>
+                        <p class="text-gray-600">Pon-Sob: 7:00 - 19:00</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-sm text-blue-800">
+                        <strong>Wskazówka:</strong> Najlepiej dzwonić w godzinach 7:00-19:00. 
+                        Na SMS-y i e-maile odpowiadam tego samego dnia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold text-lg mb-4">Usługi ogrodnicze</h4>
+                <p class="text-gray-400 text-sm">Grzegorz Mirecki</p>
+                <p class="text-gray-400 text-sm">Profesjonalna pielęgnacja ogrodów w Knurowie i powiecie gliwickim</p>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-4">Usługi</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li>Koszenie</li>
+                    <li>Przycinanie</li>
+                    <li>Nawożenie</li>
+                    <li>Wertykulacja</li>
+                    <li>Nasadzenia</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-4">Kontakt</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><i class="fas fa-phone mr-2"></i>447 223 593</li>
+                    <li><i class="fas fa-envelope mr-2"></i>grzegorz.mirecki01@gmail.com</li>
+                    <li><i class="fas fa-map-marker-alt mr-2"></i>Knurów, woj. śląskie</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-lg mb-4">Obszar działania</h4>
+                <p class="text-gray-400 text-sm">Knurów • Gierałtowice • Pilchowice • Pyskowice • Cały powiat gliwicki</p>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+            <p>© 2024 Grzegorz Mirecki. Wszelkie prawa zastrzeżone.</p>
+            <p class="mt-2">Strona stworzona z ❤️ dla lokalnej społeczności</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Mobile menu toggle
+document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
+});
+
+// Form submission
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Show success message
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('form-success').classList.remove('hidden');
+    
+    // Reset form after 5 seconds
+    setTimeout(() => {
+        document.getElementById('contact-form').style.display = 'block';
+        document.getElementById('form-success').classList.add('hidden');
+        document.getElementById('contact-form').reset();
+    }, 5000);
+});
+
+// Smooth scroll for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// Navbar background on scroll
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('shadow-lg');
+    } else {
+        navbar.classList.remove('shadow-lg');
+    }
+});
+</script>
+
+</body>
+</html>
